@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+.el-header, .el-footer {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei", sans-serif;
+    font-weight: 600;
+    text-align: center;
+    z-index: 10;
+}
+
+.el-main {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    font-family: "SHS_SC_Normal", sans-serif;
+    font-weight: 1200;
+    text-align: center;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: #000000;
+}

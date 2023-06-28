@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <!-- 引入vue -->
+    <script src="../lib/vue/vue.js"></script>
+
+    <!-- elementUI -->
+    <link rel="stylesheet" href="../lib/elementUI/index.css">
+    <script src="../lib/elementUI/index.js"></script>
+
+    <!-- axios -->
+    <script src="../lib/axios/axios.js"></script>
+
+    <!-- 自定义CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<style>
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 100%;
+    }
+
+    .el-menu-vertical-demo {
+        width: 72px;
+        min-height: 100%;
+    }
+</style>
+
+<body>
+<div id="app">
+
+    <el-container>
+
+        <el-main>
+
+            <user_nav></user_nav>
+
+            <el-row style="left: 200px;width: 70%;margin-top: 100px">
+                <el-col :span="2" :offset="2">
+
+                    <el-button type="primary" @click="createProfileVisible=true">新建角色</el-button>
+
+                </el-col>
+            </el-row>
+
+            <el-row style="left: 200px;width: 70%">
+                <el-col :span="20" :offset="2">
+
+                    <el-table :data="profilesTable" style="width: 100%">
+                        <el-table-column
+                                prop="name"
+                                label="角色名"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                label="材质"
+                                width="300">
+                            <template slot-scope="scope">
+                                <img :src="`data:image/png;base64,` + scope.row.headBase64String"/>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="操作">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="handleEdit(scope.row.id)">添加材质
+                                </el-button>
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="handleDelete(scope.row.id)">删除材质
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </el-col>
+            </el-row>
+
+        </el-main>
+
+    </el-container>
+
+    <el-dialog title="新建角色" :visible.sync="createProfileVisible" width="30%">
+        <el-input v-model="createProfileName" placeholder="请输入角色名"></el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="createProfileVisible = false">取 消</el-button>
+            <el-button type="primary" @click="createProfile">确 定</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog title="添加材质" :visible.sync="uploadTextureVisible" width="30%">
+        <div style="margin-bottom: 30px">
+            <el-radio v-model="uploadObj.model" label="default">Steven</el-radio>
+            <el-radio v-model="uploadObj.model" label="slim">Alex</el-radio>
+        </div>
+        <br>
+        <div style="margin-bottom: 40px;margin-top: 0">
+            <el-radio v-model="uploadObj.textureType" label="SKIN">皮肤</el-radio>
+            <el-radio v-model="uploadObj.textureType" label="CAPE" disabled>披风</el-radio>
+        </div>
+        <el-upload
+                class="upload-demo"
+                ref="upload"
+                action="/web/profile/uploadTexture"
+                :data="uploadObj"
+                :limit="1"
+                :on-exceed="handleExceed"
+                :before-upload="beforeUpload"
+                :on-success="handleAvatarSuccess"
+                :file-list="fileList"
+                :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary">选取图片</el-button>
+        </el-upload>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="uploadTextureVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitUpload">确 定</el-button>
+        </span>
+    </el-dialog>
+
+</div>
+
+<!-- 自定义js -->
+<script src="../components/nav.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            user: {
+                id: "",
+                username: ""
+            },
+            profilesTable: [],
+
+            createProfileVisible: false,
+            createProfileName: "",
+
+            uploadTextureVisible: false,
+            fileList: [],
+            uploadObj: {
+                id: "",
+                model: "default",
+                textureType: "SKIN"
+            }
+        },
+        mounted() {
+            this.getInfo();
+        },
+        methods: {
+            getInfo() {
+                let that = this;
+                axios.get("/web/info/getInfo")
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            document.title = resp.data.data.title;
+                            if (resp.data.data.user != null) {
+                                that.user.id = resp.data.data.user.id;
+                                that.user.username = resp.data.data.user.username;
+                                that.getProfilesByUserId();
+                            }
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            getProfilesByUserId() {
+                let that = this;
+                axios.post("/web/profile/getProfilesByUserId/" + that.user.id)
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            that.profilesTable = resp.data.data;
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            createProfile() {
+                let that = this;
+                axios.post("/web/profile/createProfile", {createProfileName: that.createProfileName})
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            that.$message.success(resp.data.msg);
+                            that.getProfilesByUserId();
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            handleEdit(id) {
+                this.uploadObj.id = id;
+                this.uploadTextureVisible = true;
+            },
+            handleDelete(id) {
+                let that = this;
+                axios.delete("/web/profile/" + id + "/SKIN")
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            that.$message.success(resp.data.msg);
+                            that.createProfileVisible = false;
+                            that.getProfilesByUserId();
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            submitUpload() {
+                this.$refs.upload.submit();
+            },
+            beforeUpload() {
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 1 张材质`);
+            },
+            handleAvatarSuccess() {
+                this.getProfilesByUserId();
+                this.uploadTextureVisible = false;
+            }
+        }
+    })
+</script>
+</body>
+</html>

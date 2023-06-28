@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brick.yggdrasilserver.mapper.DataBaseMapper">
+
+    <update id="insertTest">
+        INSERT INTO `profile` VALUES ('530fa97a357f3c1994d30c5c65c18fe8', 'test', 1);
+        INSERT INTO `texture` VALUES ('530fa97a357f3c1994d30c5c65c18fe8', 'test', 'SKIN', '1687177049000',
+        'steven', 'default');
+        INSERT INTO `user` VALUES (1, 'test@126.com', '93327f2856df1105a1318895ac44e684');
+        INSERT INTO `user_property` VALUES (1, 'preferredLanguage', 'zh_CN', 1);
+    </update>
+
+    <update id="createTable">
+
+        CREATE TABLE IF NOT EXISTS `profile` (
+        `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `user_id` int(11) NULL DEFAULT NULL,
+        PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+        CREATE TABLE IF NOT EXISTS `texture` (
+        `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `timestamp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `filename` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `model` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+        CREATE TABLE IF NOT EXISTS `user` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+        CREATE TABLE IF NOT EXISTS `user_property` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+        `user_id` int(11) NULL DEFAULT NULL,
+        PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+    </update>
+
+</mapper>

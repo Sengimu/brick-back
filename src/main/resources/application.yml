@@ -1,0 +1,28 @@
+server:
+  port: ${server-port}
+  tomcat:
+    uri-encoding: utf-8
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${mysql.username}
+    password: ${mysql.password}
+    url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8
+    type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
+      password: ${redis.password}
+      database: ${redis.database}
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  profiles:
+    active: config
+
+server-info:
+  implementationName: 积木brick-Yggdrasil验证端
+  implementationVersion: 0.1.0

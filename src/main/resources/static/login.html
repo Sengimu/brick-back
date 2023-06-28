@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <!-- 引入vue -->
+    <script src="./lib/vue/vue.js"></script>
+
+    <!-- elementUI -->
+    <link rel="stylesheet" href="./lib/elementUI/index.css">
+    <script src="./lib/elementUI/index.js"></script>
+
+    <!-- axios -->
+    <script src="./lib/axios/axios.js"></script>
+
+    <!-- 自定义CSS -->
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+<div id="app">
+
+    <el-container>
+
+        <el-main style="text-align:center;margin-top: 150px">
+
+            <el-row>
+
+                <el-col :span="6" :offset="9">
+
+                    <el-card header="登录">
+
+                        <el-form ref="loginForm" :model="loginForm" label-width="80px">
+                            <el-form-item label="邮箱">
+                                <el-input v-model="loginForm.username"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input v-model="loginForm.password" show-password></el-input>
+                            </el-form-item>
+                            </el-form-item>
+                            <el-form-item label="验证码">
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-input v-model="loginForm.verifyCode"></el-input>
+                                    </el-col>
+                                    <el-col :span="10" :offset="2" style="text-align: right">
+                                        <img :src="`data:image/png;base64,` + verifyCodeBase64String"
+                                             @click="getVerifyCode"/>
+                                    </el-col>
+                                </el-row>
+                            </el-form-item>
+                            <el-form-item style="text-align: left">
+                                <el-button type="primary" @click="login">登录</el-button>
+                                <el-button @click="go">去注册</el-button>
+                            </el-form-item>
+                        </el-form>
+
+                    </el-card>
+
+                </el-col>
+
+            </el-row>
+
+        </el-main>
+
+    </el-container>
+
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            loginForm: {
+                username: "",
+                password: "",
+                verifyCode: ""
+            },
+            verifyCodeBase64String: ""
+        },
+        mounted() {
+            this.getInfo();
+            this.getVerifyCode();
+        },
+        methods: {
+            getInfo() {
+                let that = this;
+                axios.get("/web/info/getInfo")
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            document.title = resp.data.data.title;
+                        }
+                    })
+            },
+            getVerifyCode() {
+                let that = this;
+                axios.get("/web/user/getVerifyCode")
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            that.verifyCodeBase64String = resp.data.data.verifyCodeBase64String;
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            login() {
+                let that = this;
+                axios.post("/web/user/login", that.loginForm)
+                    .then(function (resp) {
+                        if (resp.data.code == 1) {
+                            that.$message.success(resp.data.msg);
+                            window.location.href = "user/profile.html";
+                        } else {
+                            that.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+            go() {
+                window.location.href = "/register.html";
+            }
+        }
+    })
+</script>
+</body>
+</html>
