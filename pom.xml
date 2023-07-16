@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.brick</groupId>
-    <artifactId>brick</artifactId>
-    <version>0.1.0</version>
-    <name>brick</name>
-    <description>brick</description>
+    <artifactId>brick-end</artifactId>
+    <version>0.2.0</version>
+    <name>brick-end</name>
+    <description>brick-end</description>
     <properties>
         <java.version>17</java.version>
     </properties>
