@@ -48,7 +48,7 @@ public class WebProfileController {
         String headBase64String = profiles.size() > 0 ? iWebProfileService.getHeadById(profiles.get(0).getId(), 4L) : iWebProfileService.getHeadById("steven", 4L);
         if (headBase64String != null) {
 
-            return AjaxResult.success(Map.of("headBase64String", headBase64String));
+            return AjaxResult.success(Map.of("headBase64Str", headBase64String));
         }
 
         return AjaxResult.error();
@@ -70,7 +70,7 @@ public class WebProfileController {
 
                 String headBase64String = iWebProfileService.getHeadById(profile.getId(), 4L);
                 if (headBase64String != null) {
-                    map.put("headBase64String", headBase64String);
+                    map.put("headBase64Str", headBase64String);
                 }
                 result.add(map);
             }
@@ -125,6 +125,8 @@ public class WebProfileController {
         if (user != null) {
             if (iWebProfileService.createProfile(createProfileName, user.getId())) {
                 return AjaxResult.success("创建成功");
+            } else {
+                return AjaxResult.error("角色名已存在或你已无法创建更多角色");
             }
         }
 
