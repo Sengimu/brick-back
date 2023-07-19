@@ -1,40 +1,24 @@
-# brick (施工中)
-brick提供了如正版一样的验证系统，它的安全性无疑是优秀的。你可以使用账号密码在启动器上登录，且无需通过额外的皮肤加载系统获取皮肤，在纯净服务端及客户端的情况下亦可显示皮肤。同时它也兼容了csl的API，你同样可以使用csl来加载你的皮肤。brick易于部署，开箱即用，且与MC同属JAVA编写，用户对此会有些许的熟悉感。
+# Brick
 
-# 环境需求
-≥ JRE 17
+## 简介
 
-MySQL
+Brick是一款部署便捷，开箱即用的`yggdrasil验证端`，它提供了与正版登录相似的`外置登录系统`
+，使你的服务器更具有保障，同时也可以随意使用皮肤而不通过额外的皮肤加载方式(使用同一验证端环境的客户端互相皮肤可见)
+。它也支持通过csl的方式来加载皮肤。
 
-Redis
+Brick实现了`authlib-injector`规范的API，目前主流的启动器均内置了`authlib-injector`
+，因此腐竹只需部署验证端，而对MC服务端和MC客户端(启动器)进行简单的配置即可使用外置登录且将生态掌握在自己手中。正如名字所言，积木-Brick希望成为服务器生态中的一块积木。
 
-# 快速使用
-解压zip包，内容应有核心文件+配置文件+初始资源+启动bat。
+Brick是以`springboot+vue`驱动的。在设计时，`高度模块化`就是制作的规范及目标，因此在不断的迭代更新中，brick将尽力给予更多的自由度。
 
-填写配置文件，内容有详细注释，公密钥先留空，双击bat启动。
+## 相关链接
 
-进入http(s)://example.com:(80/443/..)/setup.html进行初始化，请使用你的IP。
+[WIKI](https://wiki.sengimu.tech/brick/)
 
-查看控制台打印的token复制并验证，成功后将公密钥复制进配置文件，重启验证端。
+[Github](https://github.com/Sengimu/brick-back)
 
-到此验证端的部署已经结束了，如果你有使用blessingskin的经验已经可以离开了~
+[QQ群](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=m--1bcIMultF5yreeUy3S7QnJb51apo0&authKey=%2FfZDxaaOjTDRw9QGKI9B8hLJ8QhjQihKpbaOJjz8sRprtNTEhbhy3oxSiWwmZTfJ&noverify=0&group_code=539544849)
 
-# MC服务端 & MC客户端
-### 服务端
-在服务端启动bat/sh中加入 -javaagent:authlib-injector-x.x.x.jar=http(s)://example.com:(80/443/..)/yggdrasil 即可
+## 支持 & 反馈
 
-authlib-injector请自行下载
-
-### 客户端
-浏览器输入http(s)://example.com:(80/443/..)进入首页
-
-点击登录 -> 注册后再登录 -> 新建角色 -> 上传材质
-
-完成后在启动器添加 验证地址:http(s)://example.com:(80/443/..)/yggdrasil 注册地址:http(s)://example.com:(80/443/..)/register.html
-
-初始化时提供了一个测试账户 用户名:test@126.com 密码:test999 它没有特权请放心，实际上brick的任何账户都是平等的
-
-# 下载 & 反馈
-GitHub: 提交issues
-
-QQ群: 539544849
+请加群或者提交issues
