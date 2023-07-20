@@ -3,19 +3,15 @@ package com.brick.yggdrasilserver.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.brick.yggdrasilserver.common.AjaxResult;
-import com.brick.yggdrasilserver.entity.Profile;
-import com.brick.yggdrasilserver.entity.Token;
 import com.brick.yggdrasilserver.entity.User;
-import com.brick.yggdrasilserver.service.IProfileService;
 import com.brick.yggdrasilserver.service.IUserService;
-import com.brick.yggdrasilserver.service.IWebProfileServiceImpl;
 import com.brick.yggdrasilserver.service.IWebUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.awt.*;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,13 +24,7 @@ public class WebUserController {
     private IWebUserService iWebUserService;
 
     @Autowired
-    private IWebProfileServiceImpl iWebProfileService;
-
-    @Autowired
     private IUserService iUserService;
-
-    @Autowired
-    private IProfileService iProfileService;
 
     @Autowired
     private HttpServletRequest request;
@@ -42,7 +32,8 @@ public class WebUserController {
     @GetMapping("/getVerifyCode")
     public AjaxResult getVerifyCode() {
 
-        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(100, 40, 4, 100);
+        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(100, 40, 4, 80);
+        lineCaptcha.setFont(new Font("DejaVu Sans", Font.PLAIN, 28));
         if (lineCaptcha.getCode() != null && !lineCaptcha.getCode().equals("")) {
             HttpSession session = request.getSession();
             session.setAttribute("verifyCode", lineCaptcha.getCode());

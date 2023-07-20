@@ -27,7 +27,7 @@ public class FileConfig implements WebMvcConfigurer {
             registry.addResourceHandler("/cus/images/**").addResourceLocations("file:" + IMAGE_WIN_PATH + "\\");
         } else {
             registry.addResourceHandler("/csl/textures/**").addResourceLocations("file:" + IMAGE_LIN_PATH + "/upload/textures/");
-            registry.addResourceHandler("/cus/images/**").addResourceLocations("file:" + IMAGE_WIN_PATH + "/");
+            registry.addResourceHandler("/cus/images/**").addResourceLocations("file:" + IMAGE_LIN_PATH + "/");
         }
     }
 

@@ -6,7 +6,7 @@ target/
 
 /config
 
-/src/main/resources/static/
+/src/main/resources/static/*
 
 ### STS ###
 .apt_generated
