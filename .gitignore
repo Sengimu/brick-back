@@ -6,7 +6,11 @@ target/
 
 /config
 
+/images/upload/textures/*
+!/images/upload/textures/steven.png
+
 /src/main/resources/static/*
+
 
 ### STS ###
 .apt_generated
