@@ -1,13 +1,8 @@
 package com.brick.yggdrasilserver.service.impl;
 
-import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.asymmetric.Sign;
-import cn.hutool.crypto.asymmetric.SignAlgorithm;
 import cn.hutool.crypto.digest.DigestUtil;
-import com.alibaba.fastjson2.JSON;
 import com.brick.yggdrasilserver.common.FileConfig;
 import com.brick.yggdrasilserver.entity.Profile;
 import com.brick.yggdrasilserver.entity.Texture;
@@ -23,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProfileServiceImpl implements IProfileService {
@@ -51,32 +49,27 @@ public class ProfileServiceImpl implements IProfileService {
 
         for (Map<String, Object> tb_profile : tb_profiles) {
 
-            Profile profile = new Profile();
-
             String id = tb_profile.get("id").toString();
             String name = tb_profile.get("name").toString();
 
-            profile.setId(id);
-            profile.setName(name);
-            profile.setProperties(getProfileProperties(id));
+            Profile profile = new Profile(id, name);
+
+            setProfileProperties(profile);
 
             result.add(profile);
-        }
+         }
 
         return result;
     }
 
     public Profile getProfileById(String id) {
 
-        Profile result = new Profile();
-
         Map<String, Object> tb_profile = profileMapper.selectProfileById(id);
 
-        result.setId(id);
-        result.setName(tb_profile.get("name").toString());
-        result.setProperties(getProfileProperties(id));
+        Profile profile = new Profile(id,tb_profile.get("name").toString());
+        setProfileProperties(profile);
 
-        return result;
+        return profile;
     }
 
     public Profile getProfileByAccessToken(String accessToken) {
@@ -94,9 +87,7 @@ public class ProfileServiceImpl implements IProfileService {
 
         List<Profile> result = new ArrayList<>();
         for (String name : names) {
-            if (getProfileByProfileName(name) != null) {
-                result.add(getProfileByProfileName(name));
-            }
+            result.add(getProfileByProfileName(name));
         }
 
         return result;
@@ -157,52 +148,32 @@ public class ProfileServiceImpl implements IProfileService {
 
     private Profile getProfileByProfileName(String name) {
 
-        Profile result = new Profile();
-
         Map<String, Object> tb_profile = profileMapper.selectProfileByProfileName(name);
 
-        if (tb_profile != null) {
-            result.setId(tb_profile.get("id").toString());
-            result.setName(tb_profile.get("name").toString());
-            result.setProperties(getProfileProperties(tb_profile.get("id").toString()));
+        Profile profile = new Profile(tb_profile.get("id").toString(),name);
+        setProfileProperties(profile);
 
-            return result;
-        }
-
-        return null;
+        return profile;
     }
 
-    private List<Map<String, Object>> getProfileProperties(String id) {
+    private void setProfileProperties(Profile profile) {
 
-        List<Map<String, Object>> properties = new ArrayList<>();
+        List<Map<String, Object>> tbTextures = profileMapper.selectTexturesById(profile.getId());
 
-        List<Map<String, Object>> tb_textures = profileMapper.selectTexturesById(id);
+        for (Map<String, Object> tbTexture : tbTextures) {
 
-        Texture texture = new Texture();
+            Texture texture = new Texture();
 
-        for (Map<String, Object> tb_texture : tb_textures) {
-            texture.setProfileId(tb_texture.get("id").toString());
-            texture.setProfileName(tb_texture.get("name").toString());
-            texture.setTimestamp(Long.parseLong(tb_texture.get("timestamp").toString()));
-            String type = tb_texture.get("type").toString();
+            texture.setProfileId(tbTexture.get("id").toString());
+            texture.setProfileName(tbTexture.get("name").toString());
+            texture.setTimestamp(Long.parseLong(tbTexture.get("timestamp").toString()));
+            String type = tbTexture.get("type").toString();
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
-                    "/textures/" + tb_texture.get("filename").toString();
-            texture.setTextures(type, url, tb_texture.get("model").toString());
+                    "/textures/" + tbTexture.get("filename").toString();
+            texture.setTextures(type, url, tbTexture.get("model").toString());
 
-            Map<String, Object> textures = new HashMap<>();
-            textures.put("name", "textures");
-            String value = Base64.encode(JSON.toJSONString(texture));
-            textures.put("value", value);
-            Sign sign = SecureUtil.sign(SignAlgorithm.SHA1withRSA, privateKey, publicKey);
-            textures.put("signature", Base64.encode(sign.sign(value.getBytes())));
-            properties.add(textures);
-
-            Map<String, Object> uploadableTextures = new HashMap<>();
-            uploadableTextures.put("name", "uploadableTextures");
-            uploadableTextures.put("value", "skin");
-            properties.add(uploadableTextures);
+            profile.setTextures(texture);
+            profile.setUploadableTextures("skin");
         }
-
-        return properties;
     }
 }

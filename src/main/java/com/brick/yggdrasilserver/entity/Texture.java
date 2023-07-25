@@ -11,7 +11,7 @@ public class Texture {
     private long timestamp;
     private String profileId;
     private String profileName;
-    private Map<String, Object> textures;
+    private Map<String, Object> textures = new HashMap<>();
 
     public void setTextures(String type, String url, String model) {
 
