@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class YggdrasilServerApplicationTests {
 
     @Test
-    void contextLoads() {
+    void r() {
     }
 
 }
